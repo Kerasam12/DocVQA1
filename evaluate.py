@@ -18,7 +18,7 @@ kwargs = {
     "MAX_LEN_QUESTION":80,
     "MAX_LEN_ANSWER":50
 }
-annotations_dir = '/home/jsamper/Desktop/DocVQA/Data/Annotations/test_v1.0.json'
+annotations_dir = '/home/jsamper/Desktop/DocVQA/Data/Annotations/test_v1.0_withQT.json'
 ocr_dir = '/home/jsamper/Desktop/DocVQA/Data/OCR'
 images_dir = '/home/jsamper/Desktop/DocVQA/Data/Images'
 # Create an instance of the custom dataset
@@ -35,21 +35,24 @@ validation_dataset = SP_VQADataset(annotations_dir, ocr_dir, images_dir, transfo
 batch_size = 16
 # Create the DataLoader
 validation_loader = DataLoader(validation_dataset, batch_size=batch_size, shuffle=True)'''
-
-
 def accuracy(preds, ground_truth):
     
     #for pred, gt in zip(preds, ground_truth):
     length = min(ground_truth.shape[1], preds.shape[1])
     bs, _ = ground_truth.shape
-    print(ground_truth[::, :length].shape, preds[::, :length].shape)
+    #print(ground_truth[::, :length].shape, preds[::, :length].shape)
     correct_predictions = torch.sum((ground_truth[::, :length] == preds[::, :length])& (ground_truth[::, :length] != 0))
     total_samples = len(ground_truth)
-    print(total_samples)
+    #print(total_samples)
     accuracy = correct_predictions.item() / (length * bs)
     return accuracy
 
 
 def ansl(self):
     pass
+
+
+
+
+
 

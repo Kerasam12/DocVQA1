@@ -5,7 +5,6 @@ from torchvision import transforms
 from transformers import T5Tokenizer, T5Model
 from DataLoaderVQA import SP_VQADataset
 from VQAModel import ModelVT5
-from metrics import Evaluator
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -31,7 +30,6 @@ reshape_transform = transforms.Compose([
     
 ]) 
 
-evaluator = Evaluator()
 
 MAX_LEN_QUESTION = 80
 MAX_LEN_ANSWER = 50
@@ -41,17 +39,13 @@ train_dataset = SP_VQADataset(annotations_dir, ocr_dir, images_dir, transform = 
 batch_size = 10
 # Create the DataLoader
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-checkpoint = torch.load("/home/jsamper/Desktop/DocVQA/Code/model_weights/last_weights.pth")
 
 
 
 '''for data in train_loader:#, context_txt, context_bbox, image, answer
     print(data['question'], data['context'],data['context_bbox'], data['image'], data['answer'])'''
 model = ModelVT5().to(device)
-
-model.load_state_dict(checkpoint)
 tokenizer =  T5Tokenizer.from_pretrained('t5-small')
-tokenizer.add_tokens('<no_answ>')
 
 
 for data in train_loader:
@@ -60,12 +54,7 @@ for data in train_loader:
     context_bbox = data['context_bbox'].to(device)
     image = data['image'].to(device)
     answer = data['answer'].to(device)
-    #print(answer.shape)
-    '''print(question[0])
-    print(answer[0])
-    print(tokenizer.decode(question[0][0]),"answer:",tokenizer.decode(answer[0]))'''
+
     output = model.forward(image, context, context_bbox)
-    #mets = evaluator.get_metrics(output, answer)
-    #print(mets)
     out_words = tokenizer.batch_decode(output)
     print(out_words[0])

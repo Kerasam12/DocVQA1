@@ -147,7 +147,7 @@ class VisualEmbeddings(nn.Module):
         if config.page_retrieval_config['loss'].lower() in ['ce', 'crossentropy', 'crossentropyloss']:
             self.retrieval_criterion = CrossEntropyLoss()
 
-        self.retrieval_loss_weight = config.page_retrieval_config['loss_weight']
+        self.retrieval_loss_weight = config.page_rquestion_encodedetrieval_config['loss_weight']
 
     def forward(self, document_embeddings, answer_page_idx):
         document_embeddings = document_embeddings.view([len(document_embeddings), -1])
